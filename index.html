@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arsenal Suplementos - Potencialize seus resultados</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00A651;
+            --primary-dark: #008a43;
+            --secondary: #1a1a1a;
+            --light: #f5f5f5;
+        }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            scroll-behavior: smooth;
+        }
+        
+        .bg-arsenal-green {
+            background-color: var(--primary);
+        }
+        
+        .bg-arsenal-dark {
+            background-color: var(--secondary);
+        }
+        
+        .text-arsenal-green {
+            color: var(--primary);
+        }
+        
+        .border-arsenal-green {
+            border-color: var(--primary);
+        }
+        
+        .btn-arsenal {
+            background-color: var(--primary);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-arsenal:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        /* Animações */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .slide-in {
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .scale-up {
+            transition: transform 0.3s ease;
+        }
+        
+        .scale-up:hover {
+            transform: scale(1.05);
+        }
+        
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+        }
+        
+        .cart-drawer {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100vh;
+            background-color: white;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+            transition: right 0.3s ease;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        
+        .cart-drawer.open {
+            right: 0;
+        }
+        
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s;
+        }
+        
+        .overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        @media (max-width: 640px) {
+            .cart-drawer {
+                width: 100%;
+                right: -100%;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Overlay para o carrinho -->
+    <div id="overlay" class="overlay"></div>
+    
+    <!-- Cabeçalho -->
+    <header class="bg-white shadow-md fixed w-full top-0 z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center">
+                    <div class="text-2xl font-bold flex items-center">
+                        <span class="bg-arsenal-green text-white px-3 py-1 rounded">ARSENAL</span>
+                        <span class="ml-2 text-arsenal-green">SUPLEMENTOS</span>
+                    </div>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#inicio" class="hover:text-arsenal-green transition duration-300">Início</a>
+                    <a href="#produtos" class="hover:text-arsenal-green transition duration-300">Produtos</a>
+                    <a href="#sobre" class="hover:text-arsenal-green transition duration-300">Sobre</a>
+                    <a href="#contato" class="hover:text-arsenal-green transition duration-300">Contato</a>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <button id="cartButton" class="p-2 rounded-full hover:bg-gray-100 transition duration-300 relative">
+                            <i class="fas fa-shopping-cart text-xl"></i>
+                            <span id="cartBadge" class="cart-badge">0</span>
+                        </button>
+                    </div>
+                    <div class="block md:hidden">
+                        <button id="menuButton" class="p-2 rounded-full hover:bg-gray-100 transition duration-300">
+                            <i class="fas fa-bars text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Menu mobile -->
+            <div id="mobileMenu" class="md:hidden hidden pb-4">
+                <div class="flex flex-col space-y-3">
+                    <a href="#inicio" class="hover:text-arsenal-green transition duration-300 py-2 px-4 rounded hover:bg-gray-100">Início</a>
+                    <a href="#produtos" class="hover:text-arsenal-green transition duration-300 py-2 px-4 rounded hover:bg-gray-100">Produtos</a>
+                    <a href="#sobre" class="hover:text-arsenal-green transition duration-300 py-2 px-4 rounded hover:bg-gray-100">Sobre</a>
+                    <a href="#contato" class="hover:text-arsenal-green transition duration-300 py-2 px-4 rounded hover:bg-gray-100">Contato</a>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Carrinho Lateral -->
+    <div id="cartDrawer" class="cart-drawer">
+        <div class="p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-bold">Seu Carrinho</h2>
+                <button id="closeCart" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <div id="cartItems" class="space-y-4 mb-6">
+                <!-- Os itens do carrinho serão inseridos aqui via JavaScript -->
+            </div>
+            
+            <div id="emptyCartMessage" class="text-center py-8 text-gray-500">
+                <i class="fas fa-shopping-cart text-4xl mb-3"></i>
+                <p>Seu carrinho está vazio</p>
+            </div>
+            
+            <div id="cartSummary" class="border-t pt-4 hidden">
+                <div class="flex justify-between mb-2">
+                    <span>Subtotal:</span>
+                    <span id="subtotal" class="font-semibold">R$ 0,00</span>
+                </div>
+                <div class="flex justify-between mb-4">
+                    <span>Frete:</span>
+                    <span class="font-semibold">Grátis</span>
+                </div>
+                <div class="flex justify-between text-lg font-bold">
+                    <span>Total:</span>
+                    <span id="total" class="text-arsenal-green">R$ 0,00</span>
+                </div>
+                
+                <button class="w-full bg-arsenal-green text-white py-3 rounded-md mt-6 hover:bg-arsenal-dark transition duration-300">
+                    Finalizar Compra
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Espaçador para compensar o header fixo -->
+    <div class="h-20"></div>
+    
+    <!-- Banner Principal -->
+    <section id="inicio" class="relative bg-arsenal-dark text-white py-20 md:py-32">
+        <div class="container mx-auto px-4 z-10 relative">
+            <div class="max-w-2xl slide-in">
+                <h1 class="text-3xl md:text-5xl font-bold mb-4">Potencialize seus Resultados</h1>
+                <p class="text-lg md:text-xl mb-8">Suplementos de qualidade para ajudar você a atingir seus objetivos mais rápido.</p>
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <a href="#produtos" class="btn-arsenal py-3 px-8 rounded-md text-center font-semibold">
+                        Ver Produtos
+                    </a>
+                    <a href="#contato" class="bg-transparent border-2 border-white text-white py-3 px-8 rounded-md hover:bg-white hover:text-arsenal-dark transition duration-300 text-center font-semibold">
+                        Fale Conosco
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="absolute inset-0 bg-gradient-to-r from-arsenal-dark to-transparent opacity-90"></div>
+    </section>
+    
+    <!-- Categorias -->
+    <section class="py-10 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-2xl md:text-3xl font-bold text-center mb-8">Categorias em Destaque</h2>
+            
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                <div class="bg-gray-100 rounded-lg p-6 text-center transition duration-300 hover:shadow-lg scale-up cursor-pointer">
+                    <div class="bg-arsenal-green text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-dumbbell text-2xl"></i>
+                    </div>
+                    <h3 class="font-semibold">Whey Protein</h3>
+                </div>
+                
+                <div class="bg-gray-100 rounded-lg p-6 text-center transition duration-300 hover:shadow-lg scale-up cursor-pointer">
+                    <div class="bg-arsenal-green text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-flask text-2xl"></i>
+                    </div>
+                    <h3 class="font-semibold">Creatina</h3>
+                </div>
+                
+                <div class="bg-gray-100 rounded-lg p-6 text-center transition duration-300 hover:shadow-lg scale-up cursor-pointer">
+                    <div class="bg-arsenal-green text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-bolt text-2xl"></i>
+                    </div>
+                    <h3 class="font-semibold">Pré-Treino</h3>
+                </div>
+                
+                <div class="bg-gray-100 rounded-lg p-6 text-center transition duration-300 hover:shadow-lg scale-up cursor-pointer">
+                    <div class="bg-arsenal-green text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-pills text-2xl"></i>
+                    </div>
+                    <h3 class="font-semibold">Vitaminas</h3>
+                </div>
+                
+                <div class="bg-gray-100 rounded-lg p-6 text-center transition duration-300 hover:shadow-lg scale-up cursor-pointer">
+                    <div class="bg-arsenal-green text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-hands text-2xl"></i>
+                    </div>
+                    <h3 class="font-semibold">Utilitários</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Produtos -->
+    <section id="produtos" class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-2xl md:text-3xl font-bold text-center mb-2">Nossos Produtos</h2>
+            <p class="text-center text-gray-600 mb-12">Conheça nossa linha completa de suplementos e acessórios</p>
+            
+            <!-- Filtros -->
+            <div class="mb-8">
+                <div class="flex flex-wrap justify-center gap-3 mb-6">
+                    <button class="filter-btn active py-2 px-4 rounded-full bg-arsenal-green text-white hover:bg-arsenal-dark transition duration-300" data-filter="all">
+                        Todos
+                    </button>
+                    <button class="filter-btn py-2 px-4 rounded-full bg-gray-200 hover:bg-gray-300 transition duration-300" data-filter="whey">
+                        Whey Protein
+                    </button>
+                    <button class="filter-btn py-2 px-4 rounded-full bg-gray-200 hover:bg-gray-300 transition duration-300" data-filter="creatina">
+                        Creatina
+                    </button>
+                    <button class="filter-btn py-2 px-4 rounded-full bg-gray-200 hover:bg-gray-300 transition duration-300" data-filter="pre-treino">
+                        Pré-Treino
+                    </button>
+                    <button class="filter-btn py-2 px-4 rounded-full bg-gray-200 hover:bg-gray-300 transition duration-300" data-filter="vitaminas">
+                        Vitaminas
+                    </button>
+                    <button class="filter-btn py-2 px-4 rounded-full bg-gray-200 hover:bg-gray-300 transition duration-300" data-filter="acessorios">
+                        Utilitários
+                    </button>
+                </div>
+                
+                <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+                    <div class="relative w-full sm:w-64">
+                        <input type="text" id="searchInput" placeholder="Buscar produtos..." class="w-full py-2 px-4 pl-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-arsenal-green focus:border-transparent">
+                        <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                    </div>
+                    
+                    <div class="w-full sm:w-auto flex gap-4">
+                        <select id="sortSelect" class="py-2 px-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-arsenal-green focus:border-transparent">
+                            <option value="relevance">Relevância</option>
+                            <option value="price-low">Menor Preço</option>
+                            <option value="price-high">Maior Preço</option>
+                            <option value="name-asc">A-Z</option>
+                            <option value="name-desc">Z-A</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Grade de Produtos -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="productGrid">
+                <!-- Whey Protein -->
+                <div class="product-card bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition duration-300 fade-in" data-category="whey" data-price="149.90" data-name="Whey Protein Isolado">
+                    <div class="relative overflow-hidden pb-[100%]">
+                        <div class="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                            <div class="w-24 h-24 bg-arsenal-green rounded-full flex items-center justify-center">
+                                <i class="fas fa-dumbbell text-4xl text-white"></i>
+                            </div>
+                        </div>
+                        <div class="absolute top-2 right-2 bg-arsenal-green text-white text-xs font-bold px-2 py-1 rounded">
+                            -15%
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <div class="flex items-center mb-2">
+                            <span class="text-sm text-gray-500">Whey Protein</span>
+                            <div class="ml-auto flex">
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star-half-alt text-yellow-400"></i>
+                            </div>
+                        </div>
+                        <h3 class="font-semibold text-lg mb-1">Whey Protein Isolado</h3>
+                        <p class="text-sm text-gray-600 mb-3">900g - Sabor Chocolate</p>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <span class="text-sm text-gray-500 line-through">R$ 179,90</span>
+                                <p class="text-xl font-bold text-arsenal-green">R$ 149,90</p>
+                            </div>
+                            <button class="add-to-cart bg-arsenal-green text-white p-2 rounded-full hover:bg-arsenal-dark transition duration-300" data-id="1" data-name="Whey Protein Isolado" data-price="149.90">
+                                <i class="fas fa-shopping-cart"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="product-card bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition duration-300 fade-in" data-category="whey" data-price="119.90" data-name="Whey Protein Concentrado">
+                    <div class="relative overflow-hidden pb-[100%]">
+                        <div class="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                            <div class="w-24 h-24 bg-arsenal-green rounded-full flex items-center justify-center">
+                                <i class="fas fa-dumbbell text-4xl text-white"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <div class="flex items-center mb-2">
+                            <span class="text-sm text-gray-500">Whey Protein</span>
+                            <div class="ml-auto flex">
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="far fa-star text-yellow-400"></i>
+                            </div>
+                        </div>
+                        <h3 class="font-semibold text-lg mb-1">Whey Protein Concentrado</h3>
+                        <p class="text-sm text-gray-600 mb-3">900g - Sabor Baunilha</p>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xl font-bold text-arsenal-green">R$ 119,90</p>
+                            </div>
+                            <button class="add-to-cart bg-arsenal-green text-white p-2 rounded-full hover:bg-arsenal-dark transition duration-300" data-id="2" data-name="Whey Protein Concentrado" data-price="119.90">
+                                <i class="fas fa-shopping-cart"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Creatina -->
+                <div class="product-card bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition duration-300 fade-in" data-category="creatina" data-price="89.90" data-name="Creatina Monohidratada">
+                    <div class="relative overflow-hidden pb-[100%]">
+                        <div class="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                            <div class="w-24 h-24 bg-arsenal-green rounded-full flex items-center justify-center">
+                                <i class="fas fa-flask text-4xl text-white"></i>
+                            </div>
+                        </div>
+                        <div class="absolute top-2 right-2 bg-arsenal-green text-white text-xs font-bold px-2 py-1 rounded">
+                            Mais Vendido
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <div class="flex items-center mb-2">
+                            <span class="text-sm text-gray-500">Creatina</span>
+                            <div class="ml-auto flex">
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                            </div>
+                        </div>
+                        <h3 class="font-semibold text-lg mb-1">Creatina Monohidratada</h3>
+                        <p class="text-sm text-gray-600 mb-3">300g - Pura</p>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xl font-bold text-arsenal-green">R$ 89,90</p>
+                            </div>
+                            <button class="add-to-cart bg-arsenal-green text-white p-2 rounded-full hover:bg-arsenal-dark transition duration-300" data-id="3" data-name="Creatina Monohidratada" data-price="89.90">
+                                <i class="fas fa-shopping-cart"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Pré-treino -->
+                <div class="product-card bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition duration-300 fade-in" data-category="pre-treino" data-price="79.90" data-name="Pré-Treino Nuclear">
+                    <div class="relative overflow-hidden pb-[100%]">
+                        <div class="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                            <div class="w-24 h-24 bg-arsenal-green rounded-full flex items-center justify-center">
+                                <i class="fas fa-bolt text-4xl text-white"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <div class="flex items-center mb-2">
+                            <span class="text-sm text-gray-500">Pré-Treino</span>
+                            <div class="ml-auto flex">
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star-half-alt text-yellow-400"></i>
+                            </div>
+                        </div>
+                        <h3 class="font-semibold text-lg mb-1">Pré-Treino Nuclear</h3>
+                        <p class="text-sm text-gray-600 mb-3">300g - Sabor Frutas Vermelhas</p>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xl font-bold text-arsenal-green">R$ 79,90</p>
+                            </div>
+                            <button class="add-to-cart bg-arsenal-green text-white p-2 rounded-full hover:bg-arsenal-dark transition duration-300" data-id="4" data-name="Pré-Treino Nuclear" data-price="79.90">
+                                <i class="fas fa-shopping-cart"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Vitaminas -->
+                <div class="product-card bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition duration-300 fade-in" data-category="vitaminas" data-price="49.90" data-name="Multivitamínico Arsenal">
+                    <div class="relative overflow-hidden pb-[100%]">
+                        <div class="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                            <div class="w-24 h-24 bg-arsenal-green rounded-full flex items-center justify-center">
+                                <i class="fas fa-pills text-4xl text-white"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <div class="flex items-center mb-2">
+                            <span class="text-sm text-gray-500">Vitaminas</span>
+                            <div class="ml-auto flex">
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="far fa-star text-yellow-400"></i>
+                            </div>
+                        </div>
+                        <h3 class="font-semibold text-lg mb-1">Multivitamínico Arsenal</h3>
+                        <p class="text-sm text-gray-600 mb-3">60 cápsulas</p>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xl font-bold text-arsenal-green">R$ 49,90</p>
+                            </div>
+                            <button class="add-to-cart bg-arsenal-green text-white p-2 rounded-full hover:bg-arsenal-dark transition duration-300" data-id="5" data-name="Multivitamínico Arsenal" data-price="49.90">
+                                <i class="fas fa-shopping-cart"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Utilitários -->
+                <div class="product-card bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition duration-300 fade-in" data-category="acessorios" data-price="39.90" data-name="Munhequeira Arsenal">
+                    <div class="relative overflow-hidden pb-[100%]">
+                        <div class="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                            <div class="w-24 h-24 bg-arsenal-green rounded-full flex items-center justify-center">
+                                <i class="fas fa-hands text-4xl text-white"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <div class="flex items-center mb-2">
+                            <span class="text-sm text-gray-500">Utilitários</span>
+                            <div class="ml-auto flex">
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="far fa-star text-yellow-400"></i>
+                            </div>
+                        </div>
+                        <h3 class="font-semibold text-lg mb-1">Munhequeira Arsenal</h3>
+                        <p class="text-sm text-gray-600 mb-3">Par - Tamanho Único</p>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xl font-bold text-arsenal-green">R$ 39,90</p>
+                            </div>
+                            <button class="add-to-cart bg-arsenal-green text-white p-2 rounded-full hover:bg-arsenal-dark transition duration-300" data-id="6" data-name="Munhequeira Arsenal" data-price="39.90">
+                                <i class="fas fa-shopping-cart"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Whey Protein 2 -->
+                <div class="product-card bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition duration-300 fade-in" data-category="whey" data-price="159.90" data-name="Whey Protein Hidrolisado">
+                    <div class="relative overflow-hidden pb-[100%]">
+                        <div class="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                            <div class="w-24 h-24 bg-arsenal-green rounded-full flex items-center justify-center">
+                                <i class="fas fa-dumbbell text-4xl text-white"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <div class="flex items-center mb-2">
+                            <span class="text-sm text-gray-500">Whey Protein</span>
+                            <div class="ml-auto flex">
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                            </div>
+                        </div>
+                        <h3 class="font-semibold text-lg mb-1">Whey Protein Hidrolisado</h3>
+                        <p class="text-sm text-gray-600 mb-3">900g - Sabor Morango</p>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xl font-bold text-arsenal-green">R$ 159,90</p>
+                            </div>
+                            <button class="add-to-cart bg-arsenal-green text-white p-2 rounded-full hover:bg-arsenal-dark transition duration-300" data-id="7" data-name="Whey Protein Hidrolisado" data-price="159.90">
+                                <i class="fas fa-shopping-cart"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Acessórios 2 -->
+                <div class="product-card bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition duration-300 fade-in" data-category="acessorios" data-price="69.90" data-name="Cinturão Arsenal">
+                    <div class="relative overflow-hidden pb-[100%]">
+                        <div class="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                            <div class="w-24 h-24 bg-arsenal-green rounded-full flex items-center justify-center">
+                                <i class="fas fa-hands text-4xl text-white"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <div class="flex items-center mb-2">
+                            <span class="text-sm text-gray-500">Utilitários</span>
+                            <div class="ml-auto flex">
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star-half-alt text-yellow-400"></i>
+                            </div>
+                        </div>
+                        <h3 class="font-semibold text-lg mb-1">Cinturão Arsenal</h3>
+                        <p class="text-sm text-gray-600 mb-3">Tamanho M</p>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xl font-bold text-arsenal-green">R$ 69,90</p>
+                            </div>
+                            <button class="add-to-cart bg-arsenal-green text-white p-2 rounded-full hover:bg-arsenal-dark transition duration-300" data-id="8" data-name="Cinturão Arsenal" data-price="69.90">
+                                <i class="fas fa-shopping-cart"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Botão Ver Mais -->
+            <div class="flex justify-center mt-10">
+                <button id="loadMoreBtn" class="bg-arsenal-green text-white py-3 px-8 rounded-md hover:bg-arsenal-dark transition duration-300">
+                    Carregar Mais Produtos
+                </button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Benefícios -->
+    <section id="sobre" class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-2xl md:text-3xl font-bold text-center mb-12">Por que Escolher a Arsenal Suplementos?</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="text-center slide-in">
+                    <div class="bg-arsenal-green text-white rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-certificate text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Qualidade Garantida</h3>
+                    <p class="text-gray-600">Trabalhamos apenas com os melhores fornecedores para garantir produtos de alta qualidade para nossos clientes.</p>
+                </div>
+                
+                <div class="text-center slide-in" style="animation-delay: 0.2s;">
+                    <div class="bg-arsenal-green text-white rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-user-md text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Suporte Especializado</h3>
+                    <p class="text-gray-600">Nosso time de nutricionistas e educadores físicos está disponível para te auxiliar na melhor escolha.</p>
+                </div>
+                
+                <div class="text-center slide-in" style="animation-delay: 0.4s;">
+                    <div class="bg-arsenal-green text-white rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-shipping-fast text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Entrega Rápida</h3>
+                    <p class="text-gray-600">Entregamos para toda a cidade em até 24 horas. Compre online e receba em casa ou retire na academia.</p>
+                </div>
+            </div>
+            
+            <div class="mt-16 bg-gray-100 rounded-lg p-8">
+                <div class="flex flex-col md:flex-row items-center">
+                    <div class="md:w-1/2 mb-8 md:mb-0 md:pr-8">
+                        <h3 class="text-2xl font-bold mb-4">A Maior Academia do Norte Pioneiro agora com suplementação completa!</h3>
+                        <p class="text-gray-600 mb-4">A Arsenal Suplementos surge como uma extensão da Academia Arsenal, oferecendo os melhores produtos para potencializar seus resultados de treino.</p>
+                        <p class="text-gray-600 mb-4">Nosso compromisso é com sua saúde e performance. Por isso, selecionamos apenas produtos de qualidade comprovada e eficácia garantida.</p>
+                        <div class="flex gap-4 mt-6">
+                            <a href="#produtos" class="btn-arsenal py-2 px-6 rounded-md text-center font-semibold">
+                                Conhecer Produtos
+                            </a>
+                        </div>
+                    </div>
+                    <div class="md:w-1/2 flex justify-center">
+                        <div class="w-64 h-64 bg-gradient-to-br from-arsenal-green to-arsenal-dark rounded-full flex items-center justify-center">
+                            <div class="text-white text-center">
+                                <i class="fas fa-dumbbell text-4xl mb-3"></i>
+                                <h4 class="text-xl font-bold">ARSENAL</h4>
+                                <p>SUPLEMENTOS</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Depoimentos -->
+    <section class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-2xl md:text-3xl font-bold text-center mb-4">O que Nossos Clientes Dizem</h2>
+            <p class="text-center text-gray-600 mb-12">Veja os resultados reais obtidos com nossos produtos</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition duration-300">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 bg-arsenal-green rounded-full flex items-center justify-center text-white font-bold text-lg">
+                            RD
+                        </div>
+                        <div class="ml-4">
+                            <h4 class="font-semibold">Rafael Dias</h4>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600">"Comecei a usar o Whey Protein Isolado da Arsenal há 3 meses e os resultados são visíveis! Ganho de massa muscular e recuperação muito mais rápida."</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition duration-300">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 bg-arsenal-green rounded-full flex items-center justify-center text-white font-bold text-lg">
+                            ML
+                        </div>
+                        <div class="ml-4">
+                            <h4 class="font-semibold">Marina Lima</h4>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600">"A creatina da Arsenal é simplesmente a melhor que já usei. Sem efeitos colaterais e com resultados excelentes. Já recomendei para todos os meus amigos!"</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition duration-300">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 bg-arsenal-green rounded-full flex items-center justify-center text-white font-bold text-lg">
+                            CS
+                        </div>
+                        <div class="ml-4">
+                            <h4 class="font-semibold">Carlos Silva</h4>
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600">"O atendimento da loja é excelente! Os produtos chegam rápido e os preços são ótimos. O pré-treino me dá uma disposição incrível nos treinos."</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- CTA -->
+    <section class="py-16 bg-arsenal-dark text-white">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row items-center justify-between">
+                <div class="md:w-2/3 mb-6 md:mb-0">
+                    <h2 class="text-2xl md:text-3xl font-bold mb-2">Pronto para elevar seu treino ao próximo nível?</h2>
+                    <p class="text-lg">Cadastre-se e receba 10% de desconto na primeira compra!</p>
+                </div>
+                <div>
+                    <button class="bg-white text-arsenal-dark py-3 px-8 rounded-md font-semibold hover:bg-gray-100 transition duration-300">
+                        Cadastrar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Contato e Rodapé -->
+    <footer id="contato" class="bg-arsenal-dark text-white pt-12 pb-6">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <div class="text-2xl font-bold flex items-center mb-4">
+                        <span class="bg-arsenal-green text-white px-2 py-1 rounded">ARSENAL</span>
+                        <span class="ml-2">SUPLEMENTOS</span>
+                    </div>
+                    <p class="text-gray-300 mb-4">A maior academia do Norte Pioneiro agora com sua linha completa de suplementos.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-white hover:text-arsenal-green transition duration-300">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="text-white hover:text-arsenal-green transition duration-300">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="text-white hover:text-arsenal-green transition duration-300">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold text-lg mb-4">Links Rápidos</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#inicio" class="text-gray-300 hover:text-arsenal-green transition duration-300">Início</a></li>
+                        <li><a href="#produtos" class="text-gray-300 hover:text-arsenal-green transition duration-300">Produtos</a></li>
+                        <li><a href="#sobre" class="text-gray-300 hover:text-arsenal-green transition duration-300">Sobre Nós</a></li>
+                        <li><a href="#contato" class="text-gray-300 hover:text-arsenal-green transition duration-300">Contato</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold text-lg mb-4">Categorias</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#produtos" class="text-gray-300 hover:text-arsenal-green transition duration-300">Whey Protein</a></li>
+                        <li><a href="#produtos" class="text-gray-300 hover:text-arsenal-green transition duration-300">Creatina</a></li>
+                        <li><a href="#produtos" class="text-gray-300 hover:text-arsenal-green transition duration-300">Pré-Treino</a></li>
+                        <li><a href="#produtos" class="text-gray-300 hover:text-arsenal-green transition duration-300">Vitaminas</a></li>
+                        <li><a href="#produtos" class="text-gray-300 hover:text-arsenal-green transition duration-300">Utilitários</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold text-lg mb-4">Contato</h4>
+                    <ul class="space-y-2">
+                        <li class="flex items-center">
+                            <i class="fas fa-map-marker-alt w-6"></i>
+                            <span class="ml-2 text-gray-300">Rua Principal, 123 - Centro</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-phone w-6"></i>
+                            <span class="ml-2 text-gray-300">(43) 99999-9999</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-envelope w-6"></i>
+                            <span class="ml-2 text-gray-300">contato@arsenalsuplementos.com</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-clock w-6"></i>
+                            <span class="ml-2 text-gray-300">Seg-Sex: 05:30-23:00<br>Sáb: 06:00-19:00<br>Dom: 08:00-13:00</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 pt-6 text-center text-gray-400">
+                <p>&copy; 2023 Arsenal Suplementos. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- JavaScript -->
+    <script>
+        // Menu mobile
+        document.getElementById('menuButton').addEventListener('click', () => {
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        // Carrinho de compras
+        const cartButton = document.getElementById('cartButton');
+        const cartDrawer = document.getElementById('cartDrawer');
+        const closeCart = document.getElementById('closeCart');
+        const overlay = document.getElementById('overlay');
+        const cartItems = document.getElementById('cartItems');
+        const emptyCartMessage = document.getElementById('emptyCartMessage');
+        const cartSummary = document.getElementById('cartSummary');
+        const subtotalElement = document.getElementById('subtotal');
+        const totalElement = document.getElementById('total');
+        const cartBadge = document.getElementById('cartBadge');
+        
+        // Array para armazenar itens do carrinho
+        let cart = [];
+        
+        // Abrir carrinho
+        cartButton.addEventListener('click', () => {
+            cartDrawer.classList.add('open');
+            overlay.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        });
+        
+        // Fechar carrinho
+        closeCart.addEventListener('click', closeCartFunction);
+        overlay.addEventListener('click', closeCartFunction);
+        
+        function closeCartFunction() {
+            cartDrawer.classList.remove('open');
+            overlay.classList.remove('open');
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Adicionar ao carrinho
+        document.querySelectorAll('.add-to-cart').forEach(button => {
+            button.addEventListener('click', () => {
+                const id = button.getAttribute('data-id');
+                const name = button.getAttribute('data-name');
+                const price = parseFloat(button.getAttribute('data-price'));
+                
+                // Verificar se o produto já está no carrinho
+                const existingItem = cart.find(item => item.id === id);
+                
+                if (existingItem) {
+                    existingItem.quantity += 1;
+                } else {
+                    cart.push({
+                        id,
+                        name,
+                        price,
+                        quantity: 1
+                    });
+                }
+                
+                updateCart();
+                
+                // Animar o ícone do carrinho
+                cartButton.classList.add('scale-up');
+                setTimeout(() => {
+                    cartButton.classList.remove('scale-up');
+                }, 300);
+            });
+        });
+        
+        // Atualizar carrinho
+        function updateCart() {
+            cartItems.innerHTML = '';
+            
+            if (cart.length === 0) {
+                emptyCartMessage.classList.remove('hidden');
+                cartSummary.classList.add('hidden');
+                cartBadge.textContent = '0';
+            } else {
+                emptyCartMessage.classList.add('hidden');
+                cartSummary.classList.remove('hidden');
+                
+                // Número total de itens no carrinho
+                let totalItems = 0;
+                
+                // Subtotal
+                let subtotal = 0;
+                
+                cart.forEach(item => {
+                    const cartItem = document.createElement('div');
+                    cartItem.className = 'flex items-center justify-between border-b pb-4';
+                    cartItem.innerHTML = `
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 bg-arsenal-green rounded-full flex items-center justify-center text-white mr-3">
+                                <i class="fas fa-dumbbell"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold">${item.name}</h4>
+                                <p class="text-gray-500">R$ ${item.price.toFixed(2)}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <button class="decrease-quantity px-2 py-1 bg-gray-200 rounded-l-md hover:bg-gray-300" data-id="${item.id}">-</button>
+                            <span class="px-3 py-1 bg-gray-100">${item.quantity}</span>
+                            <button class="increase-quantity px-2 py-1 bg-gray-200 rounded-r-md hover:bg-gray-300" data-id="${item.id}">+</button>
+                            <button class="remove-item ml-2 text-red-500 hover:text-red-700" data-id="${item.id}">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    `;
+                    cartItems.appendChild(cartItem);
+                    
+                    totalItems += item.quantity;
+                    subtotal += item.price * item.quantity;
+                });
+                
+                cartBadge.textContent = totalItems;
+                subtotalElement.textContent = `R$ ${subtotal.toFixed(2)}`;
+                totalElement.textContent = `R$ ${subtotal.toFixed(2)}`;
+                
+                // Adicionar event listeners para os botões de quantidade
+                document.querySelectorAll('.decrease-quantity').forEach(button => {
+                    button.addEventListener('click', () => {
+                        const id = button.getAttribute('data-id');
+                        const item = cart.find(item => item.id === id);
+                        
+                        if (item.quantity > 1) {
+                            item.quantity -= 1;
+                        } else {
+                            cart = cart.filter(item => item.id !== id);
+                        }
+                        
+                        updateCart();
+                    });
+                });
+                
+                document.querySelectorAll('.increase-quantity').forEach(button => {
+                    button.addEventListener('click', () => {
+                        const id = button.getAttribute('data-id');
+                        const item = cart.find(item => item.id === id);
+                        item.quantity += 1;
+                        updateCart();
+                    });
+                });
+                
+                document.querySelectorAll('.remove-item').forEach(button => {
+                    button.addEventListener('click', () => {
+                        const id = button.getAttribute('data-id');
+                        cart = cart.filter(item => item.id !== id);
+                        updateCart();
+                    });
+                });
+            }
+        }
+        
+        // Sistema de filtro de produtos
+        document.querySelectorAll('.filter-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                const filter = button.getAttribute('data-filter');
+                
+                // Remover classe active de todos os botões
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.classList.remove('active', 'bg-arsenal-green', 'text-white');
+                    btn.classList.add('bg-gray-200');
+                });
+                
+                // Adicionar classe active ao botão clicado
+                button.classList.add('active', 'bg-arsenal-green', 'text-white');
+                button.classList.remove('bg-gray-200');
+                
+                // Filtrar produtos
+                document.querySelectorAll('.product-card').forEach(card => {
+                    if (filter === 'all' || card.getAttribute('data-category') === filter) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+        
+        // Busca de produtos
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            
+            document.querySelectorAll('.product-card').forEach(card => {
+                const productName = card.getAttribute('data-name').toLowerCase();
+                
+                if (productName.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+        
+        // Ordenação de produtos
+        document.getElementById('sortSelect').addEventListener('change', (e) => {
+            const sortValue = e.target.value;
+            const products = Array.from(document.querySelectorAll('.product-card'));
+            const productGrid = document.getElementById('productGrid');
+            
+            products.sort((a, b) => {
+                const aPrice = parseFloat(a.getAttribute('data-price'));
+                const bPrice = parseFloat(b.getAttribute('data-price'));
+                const aName = a.getAttribute('data-name');
+                const bName = b.getAttribute('data-name');
+                
+                switch (sortValue) {
+                    case 'price-low':
+                        return aPrice - bPrice;
+                    case 'price-high':
+                        return bPrice - aPrice;
+                    case 'name-asc':
+                        return aName.localeCompare(bName);
+                    case 'name-desc':
+                        return bName.localeCompare(aName);
+                    default:
+                        return 0;
+                }
+            });
+            
+            // Limpar e readicionar os produtos ordenados
+            productGrid.innerHTML = '';
+            products.forEach(product => {
+                productGrid.appendChild(product);
+            });
+        });
+        
+        // Animações ao scroll
+        document.addEventListener('DOMContentLoaded', function() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('fade-in');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            document.querySelectorAll('.product-card').forEach(card => {
+                observer.observe(card);
+            });
+        });
+        
+        // Botão "Ver Mais"
+        document.getElementById('loadMoreBtn').addEventListener('click', function() {
+            alert('Funcionalidade em implementação: Carregar mais produtos.');
+        });
+    </script>
+</body>
+</html>
